@@ -16,7 +16,8 @@
   if ($result !== null) {
     $primeNumbers = implode(', ', $result['primeNumbers']);
     $totalPages = $result['totalPages'];
-    
+    $primeNumber = $_GET['primeNumber'];
+
     // Get the current page number from the query parameter 'page'
     $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
     
@@ -25,20 +26,27 @@
 
     // Prepare pagination links
     $paginationLinks = '';
+
+    if ($page > 1) {
+        $prevPage = $page - 1;
+        $paginationLinks .= '<a class="pagination-link" href="form.php?primeNumber=' . $_GET['primeNumber'] . '&page=' . $prevPage . '">Previous Page</a>';
+    }
+
     if (!$isLastPage) {
-      $nextPage = $page + 1;
-      $paginationLinks .= '<a href="form.php?primeNumber=' . $_GET['primeNumber'] . '&page=' . $nextPage . '">Next Page</a>';
+        $nextPage = $page + 1;
+        $paginationLinks .= '<a class="pagination-link" href="form.php?primeNumber=' . $_GET['primeNumber'] . '&page=' . $nextPage . '">Next Page</a>';
     }
 
     $body = <<<HTML
-    <div style="display: flex; justify-content: center; align-items: center; block-size: 100vh;">
+    <div class="result-container" style="display: flex; justify-content: center; align-items: center; block-size: 100vh;">
       <div style="background-color: rgba(255, 255, 255, 0.8); border-radius: 43px; padding: 30px; margin: 0 auto; text-align: center;">
-        <h1><b>Prime Number</b></h1>
+        <h3><b>Prime Number</b></h3>
         <br>
-        <p style="margin-block-end: 10px;"><b>Here are your results:</b></p>
+        <br>
+        <h4 style="margin-block-end: 10px;"><b>Your selected number: $primeNumber</b></h4>
+        <br>
         <table style="margin: 0 auto;">
           <tr>
-            <td style="text-align: start; padding-inline-end: 10px;"><b>Prime numbers</b></td>
             <td style="text-align: start;">$primeNumbers</td>
           </tr>
         </table>
@@ -82,3 +90,38 @@
   echo $body;
   echo $footer;
 ?>
+
+<style>
+  .pagination {
+    margin-top: 20px; /* Add spacing to the pagination links */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .pagination-link {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 4px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #333;
+    text-decoration: none;
+  }
+  .pagination-link:hover {
+    background-color: #e9e9e9;
+  }
+  .result-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 300px;
+  }
+  .result-container button {
+    margin-top: 20px; /* Add spacing to the "Enter another prime number" button */
+  }
+</style>
+
+
+
