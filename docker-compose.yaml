@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  #Presentation Tier
+  frontend_node1:
+    build: ./presentation/web/
+    restart: always
+    ports:
+      - "81:80"
+    networks:
+      - frontend
+      - backend
+
+  frontend_node2:
+    build: ./presentation/web/
+    restart: always
+    ports:
+      - "82:80"
+    networks:
+      - frontend
+      - backend
+
+  frontend_node3:
+    build: ./presentation/web/
+    restart: always
+    ports:
+      - "83:80"
+    networks:
+      - frontend
+      - backend
+
+  frontend_loadbalancer:
+    build: ./presentation/loadbalancer/
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend_node1
+      - frontend_node2
+      - frontend_node3
+    networks:
+      - frontend
+      - backend
+
+  #Business Tier
+  backend_node1:
+    build: ./business_logic/backend/
+    restart: always
+    ports:
+      - "3001:80"
+    networks:
+      - backend
+
+  backend_node2:
+    build: ./business_logic/backend/
+    restart: always
+    ports:
+      - "3002:80"
+    networks:
+      - backend
+
+  backend_node3:
+    build: ./business_logic/backend/
+    restart: always
+    ports:
+      - "3003:80"
+    networks:
+      - backend
+
+  backend_loadbalancer:
+    build: ./business_logic/loadbalancer/
+    ports:
+      - "4000:4000"
+    depends_on:
+      - backend_node1
+      - backend_node2
+      - backend_node3
+    networks:
+      - backend
+      - frontend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
