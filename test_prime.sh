@@ -6,22 +6,35 @@ echo "Waiting for services to start..."
 docker-compose up -d
 
 # Wait for services to start
-echo "Please allow 15 seconds to test the PRIME NUMBER script..."
+echo "Please allow 5 seconds to test the PRIME NUMBER script..."
 
-sleep 15
+sleep 5
 
 # Test the form submission
-RESULT=$(curl --request POST \
-  --url http://localhost:4000/logic.php \
-  --header 'Content-type: application/x-www-form-urlencoded' \
-  --data-urlencode 'primeNumber=5000' \
-  --data-urlencode 'submit')
+RESULT=$(curl --request GET \
+  --url 'http://localhost:4000/logic.php?primeNumber=5000' \
+  --header 'Content-type: application/x-www-form-urlencoded')
 
-echo "Result is $RESULT and we expect PRIME NUMBER 500"
+echo "Result is $RESULT and we expect PRIME NUMBER 5000"
+
+sleep 3
+
+echo "Now testing the pagination for page 5."
+
+sleep 5
+
+# Test the pagination result.
+RESULT=$(curl --request GET \
+  --url 'http://localhost:4000/logic.php?primeNumber=5000&page=5' \
+  --header 'Content-type: application/x-www-form-urlencoded')
+
+echo "Result is $RESULT and we expect PRIME NUMBER 5000 with current page 5."
+
+sleep 3
+
+echo "Shutting services down gracefully..."
 
 sleep 10
-
-echo "Stopping services..."
 
 # Stop services
 docker-compose down
